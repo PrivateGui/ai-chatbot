@@ -37,7 +37,7 @@ async function sendMessage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer YOUR_AI_API_TOKEN'
+        'Authorization': 'Bearer unused'
       },
       body: JSON.stringify({
         model: 'gpt-4.1-2025-04-14',
