@@ -1,20 +1,430 @@
-<!-- index.html --><!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Chatbot - Sign In</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e1e2f 0%, #2a2a4a 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            margin: 20px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .auth-container, .dashboard-container, .chat-container {
+            background: #2c2c3e;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .auth-container h2, .dashboard-container h2, .chat-container h2 {
+            text-align: center;
+            color: #00ddeb;
+            margin-bottom: 20px;
+        }
+
+        .auth-container input, .auth-container button, .input-container input, .input-container button {
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        .auth-container input, .input-container input {
+            background: #3a3a4e;
+            color: #e0e0e0;
+            outline: none;
+        }
+
+        .auth-container button, .input-container button, .dashboard-container button {
+            background: #00ddeb;
+            color: #1e1e2f;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .auth-container button:hover, .input-container button:hover, .dashboard-container button:hover {
+            background: #00b7c3;
+        }
+
+        .chat-header {
+            background: #3a3a4e;
+            padding: 15px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            color: #00ddeb;
+            font-size: 20px;
+        }
+
+        .chat-box {
+            height: 500px;
+            padding: 15px;
+            overflow-y: auto;
+            background: #2c2c3e;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+            animation: slideIn 0.3s ease-in;
+        }
+
+        .user-message {
+            background: #00ddeb;
+            color: #1e1e2f;
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
+            background: #3a3a4e;
+            color: #e0e0e0;
+            margin-right: auto;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #2c2c3e;
+            border-top: 1px solid #3a3a4e;
+        }
+
+        .input-container input {
+            flex: 1;
+        }
+
+        .input-container button {
+            padding: 12px 20px;
+        }
+
+        .reset-btn {
+            background: #ff5555;
+        }
+
+        .reset-btn:hover {
+            background: #cc4444;
+        }
+
+        .dashboard-container ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .dashboard-container li {
+            background: #3a3a4e;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dashboard-container button {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #00ddeb;
+            color: #1e1e2f;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            animation: slideInToast 0.5s ease-in-out;
+            z-index: 1000;
+        }
+
+        .error-toast {
+            background: #ff5555;
+            color: #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInToast {
+            from { opacity: 0; transform: translateY(100px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+            }
+            .chat-box {
+                height: 400px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="auth-container" id="auth-box">
-    <h2 id="form-title">Sign In</h2>
-    <input type="text" id="username" placeholder="Username" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="handleAuth()">Continue</button>
-    <div class="switch-link">
-      <span id="switch-text">Don't have an account?</span>
-      <a href="#" onclick="toggleAuth()">Sign Up</a>
+    <div class="container" id="auth-section">
+        <div class="auth-container">
+            <h2 id="auth-title">Sign Up</h2>
+            <input type="text" id="username" placeholder="Username" autocomplete="off">
+            <input type="password" id="password" placeholder="Password" autocomplete="off">
+            <button id="auth-btn">Sign Up</button>
+            <p id="toggle-auth">Already have an account? <a href="#" onclick="toggleAuth()">Login</a></p>
+        </div>
     </div>
-  </div>  <script src="auth.js"></script></body>
+
+    <div class="container" id="dashboard-section" style="display: none;">
+        <div class="dashboard-container">
+            <h2>Dashboard</h2>
+            <button onclick="showChat()">New Chat</button>
+            <button onclick="logout()">Logout</button>
+            <h3>Saved Conversations</h3>
+            <ul id="conversation-list"></ul>
+        </div>
+    </div>
+
+    <div class="container" id="chat-section" style="display: none;">
+        <div class="chat-container">
+            <div class="chat-header">AI Chatbot</div>
+            <div class="chat-box" id="chat-box"></div>
+            <div class="input-container">
+                <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+                <button id="send-btn">Send</button>
+                <button id="reset-btn" class="reset-btn">Reset</button>
+                <button onclick="saveConversation()">Save</button>
+                <button onclick="showDashboard()">Dashboard</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const authBtn = document.getElementById('auth-btn');
+        const toggleAuthLink = document.getElementById('toggle-auth');
+        const authTitle = document.getElementById('auth-title');
+        const authSection = document.getElementById('auth-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const chatSection = document.getElementById('chat-section');
+        const sendBtn = document.getElementById('send-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const userInput = document.getElementById('user-input');
+        const chatBox = document.getElementById('chat-box');
+        const conversationList = document.getElementById('conversation-list');
+
+        let isLogin = false;
+        let conversationHistory = [];
+        let currentUser = null;
+
+        // Authentication
+        authBtn.addEventListener('click', handleAuth);
+        usernameInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAuth(); });
+        passwordInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') handleAuth(); });
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+        resetBtn.addEventListener('click', resetChat);
+
+        function toggleAuth() {
+            isLogin = !isLogin;
+            authTitle.textContent = isLogin ? 'Login' : 'Sign Up';
+            authBtn.textContent = isLogin ? 'Login' : 'Sign Up';
+            toggleAuthLink.innerHTML = isLogin
+                ? `Don't have an account? <a href="#" onclick="toggleAuth()">Sign Up</a>`
+                : `Already have an account? <a href="#" onclick="toggleAuth()">Login</a>`;
+        }
+
+        function handleAuth() {
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+            if (!username || !password) {
+                showToast('Please fill in all fields', true);
+                return;
+            }
+
+            let users = JSON.parse(localStorage.getItem('users')) || {};
+            if (isLogin) {
+                if (users[username] && users[username].password === password) {
+                    currentUser = username;
+                    showToast('Login successful!');
+                    showDashboard();
+                } else {
+                    showToast('Invalid username or password', true);
+                }
+            } else {
+                if (users[username]) {
+                    showToast('Username already exists', true);
+                } else {
+                    users[username] = { password, conversations: [] };
+                    localStorage.setItem('users', JSON.stringify(users));
+                    showToast('Sign up successful! Please login.');
+                    toggleAuth();
+                }
+            }
+            usernameInput.value = '';
+            passwordInput.value = '';
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.className = `toast ${isError ? 'error-toast' : ''}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showDashboard() {
+            authSection.style.display = 'none';
+            chatSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            loadConversations();
+        }
+
+        function showChat() {
+            authSection.style.display = 'none';
+            dashboardSection.style.display = 'none';
+            chatSection.style.display = 'block';
+            conversationHistory = [];
+            chatBox.innerHTML = '';
+        }
+
+        function logout() {
+            currentUser = null;
+            authSection.style.display = 'block';
+            dashboardSection.style.display = 'none';
+            chatSection.style.display = 'none';
+            conversationHistory = [];
+            chatBox.innerHTML = '';
+        }
+
+        function appendMessage(message, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'ai-message');
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            appendMessage(message, 'user');
+            conversationHistory.push({ role: 'user', content: message });
+            userInput.value = '';
+
+            const response = await getAIResponse();
+            appendMessage(response, 'ai');
+            conversationHistory.push({ role: 'assistant', content: response });
+        }
+
+        async function getAIResponse() {
+            const apiUrl = 'https://api.llm7.io/v1/chat/completions';
+            const payload = {
+                model: 'meta-llama/Meta-Llama-3.1-8B-Instruct',
+                messages: conversationHistory,
+                max_tokens: 150
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error('API request failed');
+                const data = await response.json();
+                return data.choices[0].message.content;
+            } catch (error) {
+                console.error('Error fetching AI response:', error);
+                showToast('Error connecting to AI service', true);
+                return 'Sorry, something went wrong. Please try again.';
+            }
+        }
+
+        function resetChat() {
+            conversationHistory = [];
+            chatBox.innerHTML = '';
+        }
+
+        function saveConversation() {
+            if (!currentUser || !conversationHistory.length) {
+                showToast('No conversation to save or not logged in', true);
+                return;
+            }
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const timestamp = new Date().toLocaleString();
+            users[currentUser].conversations.push({ timestamp, messages: [...conversationHistory] });
+            localStorage.setItem('users', JSON.stringify(users));
+            showToast('Conversation saved!');
+            resetChat();
+            showDashboard();
+        }
+
+        function loadConversations() {
+            conversationList.innerHTML = '';
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            const conversations = users[currentUser]?.conversations || [];
+            conversations.forEach((conv, index) => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${conv.timestamp}</span>
+                    <div>
+                        <button onclick="viewConversation(${index})">View</button>
+                        <button onclick="deleteConversation(${index})">Delete</button>
+                    </div>
+                `;
+                conversationList.appendChild(li);
+            });
+        }
+
+        function viewConversation(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            conversationHistory = users[currentUser].conversations[index].messages;
+            showChat();
+            chatBox.innerHTML = '';
+            conversationHistory.forEach(msg => appendMessage(msg.content, msg.role));
+        }
+
+        function deleteConversation(index) {
+            const users = JSON.parse(localStorage.getItem('users')) || {};
+            users[currentUser].conversations.splice(index, 1);
+            localStorage.setItem('users', JSON.stringify(users));
+            loadConversations();
+            showToast('Conversation deleted!');
+        }
+    </script>
+</body>
 </html>
